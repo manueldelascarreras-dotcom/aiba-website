@@ -357,6 +357,9 @@ h3 { font-size: 1.18rem; letter-spacing: 0; }
 }
 .event-row:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 .event-row + .event-row { margin-top: 14px; }
+.event-row.has-thumb { grid-template-columns: 56px 96px 1fr auto; }
+.event-row-thumb { width: 56px; height: 56px; border-radius: 10px; overflow: hidden; background: var(--sand); flex: none; }
+.event-row-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .events-empty {
   color: var(--muted); background: var(--surface);
   border: 1px dashed #D6CDB9; border-radius: var(--radius);
@@ -537,7 +540,8 @@ h3 { font-size: 1.18rem; letter-spacing: 0; }
   .site-header.open .nav a.is-active::after { display: none; }
   .site-header.open .header-cta { display: flex; margin: 10px 24px 0; }
   .pillars, .grid-2, .grid-3, .grid-4, .grid-5, .track-list, .member-grid, .people { grid-template-columns: 1fr; }
-  .event-row { grid-template-columns: 64px 1fr; }
+  .event-row, .event-row.has-thumb { grid-template-columns: 64px 1fr; }
+  .event-row-thumb { display: none; }
   .event-row .btn { grid-column: 2; justify-self: start; }
   .job { grid-template-columns: 1fr; }
   .stats { grid-template-columns: 1fr; }

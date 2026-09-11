@@ -39,15 +39,21 @@
   };
   var CHIP_HASH = { talk: "talks", workshop: "workshops", upcoming: "upcoming", all: "" };
 
+  /* re-run after JS-injected content (e.g. CMS-loaded events) changes the DOM */
+  window.AIBA_refreshFilters = [];
+
   document.querySelectorAll("[data-filter-group]").forEach(function (group) {
     var chips = Array.prototype.slice.call(group.querySelectorAll(".chip"));
     var target = document.querySelector(group.getAttribute("data-filter-target"));
     if (!target) return;
-    var items = Array.prototype.slice.call(target.querySelectorAll("[data-tags]"));
     var empty = target.querySelector("[data-empty]");
     var section = group.closest("section");
+    var activeChip = group.querySelector(".chip.is-active");
+    var currentFilter = activeChip ? activeChip.getAttribute("data-filter") : "all";
 
     function apply(filter, scroll) {
+      currentFilter = filter;
+      var items = Array.prototype.slice.call(target.querySelectorAll("[data-tags]"));
       var shown = 0;
       chips.forEach(function (c) {
         c.classList.toggle("is-active", c.getAttribute("data-filter") === filter);
@@ -63,6 +69,8 @@
         requestAnimationFrame(function () { section.scrollIntoView({ block: "start" }); });
       }
     }
+
+    window.AIBA_refreshFilters.push(function () { apply(currentFilter, false); });
 
     chips.forEach(function (chip) {
       chip.addEventListener("click", function () {

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>CMS · AI Business Association</title>
+<link rel="icon" href="assets/img/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css?v=5">
+<link rel="stylesheet" href="assets/css/admin.css?v=1">
+</head>
+<body style="background:var(--cream)">
+
+<!-- LOGIN -->
+<div id="loginView" class="admin-login">
+  <div class="admin-login-card">
+    <img src="assets/img/logo.svg" alt="" width="48" height="48">
+    <h1>AIBA CMS</h1>
+    <p>Sign in to manage the E-Board, members, and events.</p>
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn-dark" type="submit" style="width:100%;justify-content:center">Sign in</button>
+      <p id="loginError" class="admin-error" hidden></p>
+    </form>
+  </div>
+</div>
+
+<!-- CMS -->
+<div id="cmsView" class="admin-shell" hidden>
+  <header class="admin-header">
+    <div class="admin-header-brand">
+      <img src="assets/img/logo.svg" alt="" width="30" height="30">
+      <span>AIBA CMS</span>
+    </div>
+    <div class="admin-header-right">
+      <span id="whoami" class="admin-whoami"></span>
+      <a class="btn btn-ghost btn-sm" href="index.html" target="_blank" rel="noopener">View site</a>
+      <button class="btn btn-outline-light btn-sm" id="logoutBtn" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <nav class="admin-tabs">
+    <button class="admin-tab is-active" data-tab="eboard" type="button">E-Board</button>
+    <button class="admin-tab" data-tab="members" type="button">Members</button>
+    <button class="admin-tab" data-tab="events" type="button">Events</button>
+  </nav>
+
+  <main class="admin-main">
+
+    <!-- E-BOARD PANEL -->
+    <section class="admin-panel" data-panel="eboard">
+      <div class="admin-grid">
+        <div>
+          <h2>E-Board members</h2>
+          <p class="admin-hint">Shown on the Community page and homepage, in this order.</p>
+          <div id="eboardList" class="admin-list"></div>
+        </div>
+        <div class="form-card">
+          <h3 id="eboardFormTitle">Add a member</h3>
+          <form id="eboardForm">
+            <input type="hidden" id="eboardId">
+            <div class="field"><label for="eboardName">Full name</label><input id="eboardName" required></div>
+            <div class="field"><label for="eboardPosition">Position</label><input id="eboardPosition" placeholder="President" required></div>
+            <div class="admin-field-row">
+              <div class="field"><label for="eboardClass">Class</label><input id="eboardClass" placeholder="Junior"></div>
+              <div class="field"><label for="eboardMajor">Major</label><input id="eboardMajor" placeholder="Finance"></div>
+            </div>
+            <div class="field"><label for="eboardMinor">Minor</label><input id="eboardMinor"></div>
+            <div class="admin-field-row">
+              <div class="field"><label for="eboardEmail">Email (optional)</label><input id="eboardEmail" type="email"></div>
+              <div class="field"><label for="eboardHometown">Hometown (optional)</label><input id="eboardHometown"></div>
+            </div>
+            <div class="field"><label for="eboardLinkedin">LinkedIn URL (optional)</label><input id="eboardLinkedin" type="url" placeholder="https://linkedin.com/in/..."></div>
+            <div class="field"><label for="eboardPhoto">Photo (optional — replaces existing)</label><input id="eboardPhoto" type="file" accept="image/*"></div>
+            <div class="admin-form-actions">
+              <button class="btn btn-orange" type="submit" id="eboardSaveBtn">Save member</button>
+              <button class="btn btn-ghost btn-sm" type="button" id="eboardCancelBtn" hidden>Cancel edit</button>
+            </div>
+            <p class="admin-status" id="eboardStatus"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEMBERS PANEL -->
+    <section class="admin-panel" data-panel="members" hidden>
+      <div class="admin-grid">
+        <div>
+          <h2>Members</h2>
+          <p class="admin-hint">Private directory — not shown publicly on the site.</p>
+          <div id="membersList" class="admin-list"></div>
+        </div>
+        <div class="form-card">
+          <h3 id="membersFormTitle">Add a member</h3>
+          <form id="membersForm">
+            <input type="hidden" id="memberId">
+            <div class="field"><label for="memberName">Full name</label><input id="memberName" required></div>
+            <div class="field"><label for="memberEmail">Email</label><input id="memberEmail" type="email" required></div>
+            <div class="admin-field-row">
+              <div class="field"><label for="memberMajor">Major</label><input id="memberMajor"></div>
+              <div class="field"><label for="memberGrad">Grad year</label><input id="memberGrad" placeholder="2027"></div>
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn btn-orange" type="submit" id="memberSaveBtn">Save member</button>
+              <button class="btn btn-ghost btn-sm" type="button" id="memberCancelBtn" hidden>Cancel edit</button>
+            </div>
+            <p class="admin-status" id="memberStatus"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENTS PANEL -->
+    <section class="admin-panel" data-panel="events" hidden>
+      <div class="admin-grid">
+        <div>
+          <h2>Events</h2>
+          <p class="admin-hint">Shown on the Events page, below the featured event.</p>
+          <div id="eventsList" class="admin-list"></div>
+        </div>
+        <div class="form-card">
+          <h3 id="eventsFormTitle">Add an event</h3>
+          <form id="eventsForm">
+            <input type="hidden" id="eventId">
+            <div class="field"><label for="eventTitle">Title</label><input id="eventTitle" required></div>
+            <div class="admin-field-row">
+              <div class="field"><label for="eventType">Type</label>
+                <select id="eventType">
+                  <option value="talk">Talk</option>
+                  <option value="workshop" selected>Workshop</option>
+                  <option value="social">Social</option>
+                </select>
+              </div>
+              <div class="field"><label for="eventDate">Date</label><input id="eventDate" type="date" required></div>
+            </div>
+            <div class="admin-field-row">
+              <div class="field"><label for="eventTime">Time</label><input id="eventTime" placeholder="6:30 – 8:00 PM"></div>
+              <div class="field"><label for="eventLocation">Location</label><input id="eventLocation" placeholder="UC 1330"></div>
+            </div>
+            <div class="field"><label for="eventDescription">Short description (optional)</label><textarea id="eventDescription"></textarea></div>
+            <div class="field"><label for="eventRsvp">RSVP link (optional — defaults to Join page)</label><input id="eventRsvp" type="url" placeholder="https://..."></div>
+            <div class="field"><label for="eventPhoto">Photo (optional — replaces existing)</label><input id="eventPhoto" type="file" accept="image/*"></div>
+            <div class="admin-form-actions">
+              <button class="btn btn-orange" type="submit" id="eventSaveBtn">Save event</button>
+              <button class="btn btn-ghost btn-sm" type="button" id="eventCancelBtn" hidden>Cancel edit</button>
+            </div>
+            <p class="admin-status" id="eventStatus"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>
