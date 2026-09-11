@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css?v=5">
-<link rel="stylesheet" href="assets/css/admin.css?v=2">
+<link rel="stylesheet" href="assets/css/admin.css?v=3">
 </head>
 <body style="background:var(--cream)">
 
@@ -22,27 +22,53 @@
 
 <div class="dash" id="dash" hidden>
   <aside class="dash-side">
-    <div class="dash-brand"><img src="assets/img/logo.svg" alt="" width="26" height="26"><span>AIBA CMS</span></div>
-    <nav class="dash-nav">
-      <button class="dash-nav-item is-active" data-tab="eboard" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M4 19c0-2.8 2.2-5 5-5s5 2.2 5 5M15 17c.6-1.7 2-3 4-3s2.6 1 3 2"/></svg>
-        E-Board
-      </button>
-      <button class="dash-nav-item" data-tab="members" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Members
-      </button>
-      <button class="dash-nav-item" data-tab="events" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
-        Events
-      </button>
-      <button class="dash-nav-item" data-tab="admins" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-        Admins
-      </button>
-    </nav>
+    <div class="dash-brand">
+      <img src="assets/img/logo.svg" alt="" width="34" height="34">
+      <span class="dash-brand-text">
+        <span class="dash-brand-name">AI Business Association</span>
+        <span class="dash-brand-sub">CMS</span>
+      </span>
+    </div>
+
+    <div class="dash-user">
+      <span class="dash-user-avatar" id="userAvatar"></span>
+      <span class="dash-user-info">
+        <span class="dash-user-name" id="userName"></span>
+        <span class="dash-user-email" id="userEmail"></span>
+      </span>
+    </div>
+
+    <div class="dash-nav-wrap">
+      <div class="dash-nav-group">
+        <div class="dash-nav-label">CMS</div>
+        <nav class="dash-nav">
+          <button class="dash-nav-item is-active" data-tab="eboard" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M4 19c0-2.8 2.2-5 5-5s5 2.2 5 5M15 17c.6-1.7 2-3 4-3s2.6 1 3 2"/></svg>
+            E-Board
+          </button>
+          <button class="dash-nav-item" data-tab="members" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Members
+          </button>
+          <button class="dash-nav-item" data-tab="events" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+            Events
+          </button>
+        </nav>
+      </div>
+
+      <div class="dash-nav-group">
+        <div class="dash-nav-label">Settings</div>
+        <nav class="dash-nav">
+          <button class="dash-nav-item" data-tab="admins" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+            Admins
+          </button>
+        </nav>
+      </div>
+    </div>
+
     <div class="dash-side-foot">
-      <div class="dash-whoami">Signed in as<b id="whoami"></b></div>
       <a class="btn btn-ghost btn-sm" href="index.html" target="_blank" rel="noopener">View site</a>
       <button class="btn btn-outline-light btn-sm" id="logoutBtn" type="button">Sign out</button>
     </div>
@@ -50,127 +76,70 @@
 
   <main class="dash-main">
     <header class="dash-topbar">
-      <h1 id="pageTitle">E-Board</h1>
-      <p id="pageSub">Shown on the Community page and homepage, in this order.</p>
+      <div class="dash-topbar-text">
+        <h1 id="pageTitle">E-Board</h1>
+        <p id="pageSub">Shown on the Community page and homepage, in this order.</p>
+      </div>
+      <div class="dash-topbar-actions">
+        <button class="btn btn-dark" type="button" data-add="eboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Add member
+        </button>
+        <button class="btn btn-dark" type="button" data-add="members" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Add member
+        </button>
+        <button class="btn btn-dark" type="button" data-add="events" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Add event
+        </button>
+        <button class="btn btn-dark" type="button" data-add="admins" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Invite admin
+        </button>
+      </div>
     </header>
 
     <div class="dash-content">
 
       <!-- E-BOARD -->
       <section class="admin-panel" data-panel="eboard">
-        <div class="admin-grid">
-          <div>
-            <div class="admin-list" id="eboardList"></div>
-          </div>
-          <div class="form-card">
-            <h3 id="eboardFormTitle">Add a member</h3>
-            <form id="eboardForm">
-              <input type="hidden" id="eboardId">
-              <div class="field"><label for="eboardName">Full name</label><input id="eboardName" required></div>
-              <div class="field"><label for="eboardPosition">Position</label><input id="eboardPosition" placeholder="President" required></div>
-              <div class="admin-field-row">
-                <div class="field"><label for="eboardClass">Class</label><input id="eboardClass" placeholder="Junior"></div>
-                <div class="field"><label for="eboardMajor">Major</label><input id="eboardMajor" placeholder="Finance"></div>
-              </div>
-              <div class="field"><label for="eboardMinor">Minor</label><input id="eboardMinor"></div>
-              <div class="admin-field-row">
-                <div class="field"><label for="eboardEmail">Email (optional)</label><input id="eboardEmail" type="email"></div>
-                <div class="field"><label for="eboardHometown">Hometown (optional)</label><input id="eboardHometown"></div>
-              </div>
-              <div class="field"><label for="eboardLinkedin">LinkedIn URL (optional)</label><input id="eboardLinkedin" type="url" placeholder="https://linkedin.com/in/..."></div>
-              <div class="field"><label for="eboardPhoto">Photo (optional — replaces existing)</label><input id="eboardPhoto" type="file" accept="image/*"></div>
-              <div class="admin-form-actions">
-                <button class="btn btn-orange" type="submit" id="eboardSaveBtn">Save member</button>
-                <button class="btn btn-ghost btn-sm" type="button" id="eboardCancelBtn" hidden>Cancel edit</button>
-              </div>
-              <p class="admin-status" id="eboardStatus"></p>
-            </form>
-          </div>
+        <div class="table-card">
+          <table class="admin-table">
+            <thead><tr><th class="col-num">#</th><th>Name</th><th>Position</th><th>Actions</th></tr></thead>
+            <tbody id="eboardList"></tbody>
+          </table>
         </div>
       </section>
 
       <!-- MEMBERS -->
       <section class="admin-panel" data-panel="members" hidden>
-        <div class="admin-grid">
-          <div>
-            <div class="admin-list" id="membersList"></div>
-          </div>
-          <div class="form-card">
-            <h3 id="membersFormTitle">Add a member</h3>
-            <form id="membersForm">
-              <input type="hidden" id="memberId">
-              <div class="field"><label for="memberName">Full name</label><input id="memberName" required></div>
-              <div class="field"><label for="memberEmail">Email</label><input id="memberEmail" type="email" required></div>
-              <div class="admin-field-row">
-                <div class="field"><label for="memberMajor">Major</label><input id="memberMajor"></div>
-                <div class="field"><label for="memberGrad">Grad year</label><input id="memberGrad" placeholder="2027"></div>
-              </div>
-              <div class="admin-form-actions">
-                <button class="btn btn-orange" type="submit" id="memberSaveBtn">Save member</button>
-                <button class="btn btn-ghost btn-sm" type="button" id="memberCancelBtn" hidden>Cancel edit</button>
-              </div>
-              <p class="admin-status" id="memberStatus"></p>
-            </form>
-          </div>
+        <div class="table-card">
+          <table class="admin-table">
+            <thead><tr><th class="col-num">#</th><th>Name</th><th>Email</th><th>Major</th><th>Grad year</th><th>Actions</th></tr></thead>
+            <tbody id="membersList"></tbody>
+          </table>
         </div>
       </section>
 
       <!-- EVENTS -->
       <section class="admin-panel" data-panel="events" hidden>
-        <div class="admin-grid">
-          <div>
-            <div class="admin-list" id="eventsList"></div>
-          </div>
-          <div class="form-card">
-            <h3 id="eventsFormTitle">Add an event</h3>
-            <form id="eventsForm">
-              <input type="hidden" id="eventId">
-              <div class="field"><label for="eventTitle">Title</label><input id="eventTitle" required></div>
-              <div class="admin-field-row">
-                <div class="field"><label for="eventType">Type</label>
-                  <select id="eventType">
-                    <option value="talk">Talk</option>
-                    <option value="workshop" selected>Workshop</option>
-                    <option value="social">Social</option>
-                  </select>
-                </div>
-                <div class="field"><label for="eventDate">Date</label><input id="eventDate" type="date" required></div>
-              </div>
-              <div class="admin-field-row">
-                <div class="field"><label for="eventTime">Time</label><input id="eventTime" placeholder="6:30 – 8:00 PM"></div>
-                <div class="field"><label for="eventLocation">Location</label><input id="eventLocation" placeholder="UC 1330"></div>
-              </div>
-              <div class="field"><label for="eventDescription">Short description (optional)</label><textarea id="eventDescription"></textarea></div>
-              <div class="field"><label for="eventRsvp">RSVP link (optional — defaults to Join page)</label><input id="eventRsvp" type="url" placeholder="https://..."></div>
-              <div class="field"><label for="eventPhoto">Photo (optional — replaces existing)</label><input id="eventPhoto" type="file" accept="image/*"></div>
-              <div class="admin-form-actions">
-                <button class="btn btn-orange" type="submit" id="eventSaveBtn">Save event</button>
-                <button class="btn btn-ghost btn-sm" type="button" id="eventCancelBtn" hidden>Cancel edit</button>
-              </div>
-              <p class="admin-status" id="eventStatus"></p>
-            </form>
-          </div>
+        <div class="table-card">
+          <table class="admin-table">
+            <thead><tr><th class="col-num">#</th><th>Title</th><th>Date</th><th>Type</th><th>Location</th><th>Actions</th></tr></thead>
+            <tbody id="eventsList"></tbody>
+          </table>
         </div>
       </section>
 
       <!-- ADMINS -->
       <section class="admin-panel" data-panel="admins" hidden>
-        <div class="admin-grid">
-          <div>
-            <div class="admin-list" id="adminsList"></div>
-          </div>
-          <div class="form-card">
-            <h3>Invite an admin</h3>
-            <p class="admin-hint" style="margin-top:-4px">They'll get an email to set their own password — you never see or send it.</p>
-            <form id="adminsForm">
-              <div class="field"><label for="adminName">Full name</label><input id="adminName" required></div>
-              <div class="field"><label for="adminEmail">Email</label><input id="adminEmail" type="email" required></div>
-              <div class="admin-form-actions">
-                <button class="btn btn-orange" type="submit" id="adminSaveBtn">Send invite</button>
-              </div>
-              <p class="admin-status" id="adminStatus"></p>
-            </form>
-          </div>
+        <p class="admin-hint">Anyone listed here can sign in and manage E-Board, Members, and Events. Invited people get an email to set their own password — you never see or send it.</p>
+        <div class="table-card">
+          <table class="admin-table">
+            <thead><tr><th class="col-num">#</th><th>Name</th><th>Email</th><th>Actions</th></tr></thead>
+            <tbody id="adminsList"></tbody>
+          </table>
         </div>
       </section>
 
@@ -178,6 +147,99 @@
   </main>
 </div>
 
-<script type="module" src="assets/js/admin-dashboard.js?v=2"></script>
+<!-- ===== modals ===== -->
+
+<div class="modal-overlay" data-modal="eboard" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h3 id="eboardFormTitle">Add a member</h3><button class="modal-close" type="button" data-modal-close="eboard">&times;</button></div>
+    <form id="eboardForm">
+      <input type="hidden" id="eboardId">
+      <div class="field"><label for="eboardName">Full name</label><input id="eboardName" required></div>
+      <div class="field"><label for="eboardPosition">Position</label><input id="eboardPosition" placeholder="President" required></div>
+      <div class="admin-field-row">
+        <div class="field"><label for="eboardClass">Class</label><input id="eboardClass" placeholder="Junior"></div>
+        <div class="field"><label for="eboardMajor">Major</label><input id="eboardMajor" placeholder="Finance"></div>
+      </div>
+      <div class="field"><label for="eboardMinor">Minor</label><input id="eboardMinor"></div>
+      <div class="admin-field-row">
+        <div class="field"><label for="eboardEmail">Email (optional)</label><input id="eboardEmail" type="email"></div>
+        <div class="field"><label for="eboardHometown">Hometown (optional)</label><input id="eboardHometown"></div>
+      </div>
+      <div class="field"><label for="eboardLinkedin">LinkedIn URL (optional)</label><input id="eboardLinkedin" type="url" placeholder="https://linkedin.com/in/..."></div>
+      <div class="field"><label for="eboardPhoto">Photo (optional — replaces existing)</label><input id="eboardPhoto" type="file" accept="image/*"></div>
+      <div class="admin-form-actions">
+        <button class="btn btn-orange" type="submit" id="eboardSaveBtn">Save member</button>
+      </div>
+      <p class="admin-status" id="eboardStatus"></p>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" data-modal="members" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h3 id="membersFormTitle">Add a member</h3><button class="modal-close" type="button" data-modal-close="members">&times;</button></div>
+    <form id="membersForm">
+      <input type="hidden" id="memberId">
+      <div class="field"><label for="memberName">Full name</label><input id="memberName" required></div>
+      <div class="field"><label for="memberEmail">Email</label><input id="memberEmail" type="email" required></div>
+      <div class="admin-field-row">
+        <div class="field"><label for="memberMajor">Major</label><input id="memberMajor"></div>
+        <div class="field"><label for="memberGrad">Grad year</label><input id="memberGrad" placeholder="2027"></div>
+      </div>
+      <div class="admin-form-actions">
+        <button class="btn btn-orange" type="submit" id="memberSaveBtn">Save member</button>
+      </div>
+      <p class="admin-status" id="memberStatus"></p>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" data-modal="events" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h3 id="eventsFormTitle">Add an event</h3><button class="modal-close" type="button" data-modal-close="events">&times;</button></div>
+    <form id="eventsForm">
+      <input type="hidden" id="eventId">
+      <div class="field"><label for="eventTitle">Title</label><input id="eventTitle" required></div>
+      <div class="admin-field-row">
+        <div class="field"><label for="eventType">Type</label>
+          <select id="eventType">
+            <option value="talk">Talk</option>
+            <option value="workshop" selected>Workshop</option>
+            <option value="social">Social</option>
+          </select>
+        </div>
+        <div class="field"><label for="eventDate">Date</label><input id="eventDate" type="date" required></div>
+      </div>
+      <div class="admin-field-row">
+        <div class="field"><label for="eventTime">Time</label><input id="eventTime" placeholder="6:30 – 8:00 PM"></div>
+        <div class="field"><label for="eventLocation">Location</label><input id="eventLocation" placeholder="UC 1330"></div>
+      </div>
+      <div class="field"><label for="eventDescription">Short description (optional)</label><textarea id="eventDescription"></textarea></div>
+      <div class="field"><label for="eventRsvp">RSVP link (optional — defaults to Join page)</label><input id="eventRsvp" type="url" placeholder="https://..."></div>
+      <div class="field"><label for="eventPhoto">Photo (optional — replaces existing)</label><input id="eventPhoto" type="file" accept="image/*"></div>
+      <div class="admin-form-actions">
+        <button class="btn btn-orange" type="submit" id="eventSaveBtn">Save event</button>
+      </div>
+      <p class="admin-status" id="eventStatus"></p>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" data-modal="admins" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><h3>Invite an admin</h3><button class="modal-close" type="button" data-modal-close="admins">&times;</button></div>
+    <p class="admin-hint" style="margin-top:-4px">They'll get an email to set their own password — you never see or send it.</p>
+    <form id="adminsForm">
+      <div class="field"><label for="adminName">Full name</label><input id="adminName" required></div>
+      <div class="field"><label for="adminEmail">Email</label><input id="adminEmail" type="email" required></div>
+      <div class="admin-form-actions">
+        <button class="btn btn-orange" type="submit" id="adminSaveBtn">Send invite</button>
+      </div>
+      <p class="admin-status" id="adminStatus"></p>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="assets/js/admin-dashboard.js?v=3"></script>
 </body>
 </html>

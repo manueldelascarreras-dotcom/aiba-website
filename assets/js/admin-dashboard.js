@@ -12,6 +12,53 @@ import {
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import { getAuth as getSecondaryAuth } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
+/* ---------- helpers ---------- */
+function setStatus(el, msg, isError) {
+  el.textContent = msg;
+  el.className = "admin-status " + (isError ? "err" : "ok");
+  if (msg) setTimeout(function () { el.textContent = ""; el.className = "admin-status"; }, 4500);
+}
+function initials(name) {
+  return (name || "").split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join("");
+}
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+async function uploadPhoto(file, folder, id) {
+  var path = folder + "/" + id + "-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.]/g, "_");
+  var storageRef = ref(storage, path);
+  await uploadBytes(storageRef, file);
+  return getDownloadURL(storageRef);
+}
+
+/* ---------- modals ---------- */
+function openModal(name) {
+  var overlay = document.querySelector('.modal-overlay[data-modal="' + name + '"]');
+  overlay.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+function closeModal(name) {
+  var overlay = document.querySelector('.modal-overlay[data-modal="' + name + '"]');
+  overlay.hidden = true;
+  document.body.style.overflow = "";
+}
+document.querySelectorAll("[data-modal-close]").forEach(function (btn) {
+  btn.addEventListener("click", function () { closeModal(btn.getAttribute("data-modal-close")); });
+});
+document.querySelectorAll(".modal-overlay").forEach(function (overlay) {
+  overlay.addEventListener("click", function (e) {
+    if (e.target === overlay) closeModal(overlay.getAttribute("data-modal"));
+  });
+});
+document.addEventListener("keydown", function (e) {
+  if (e.key !== "Escape") return;
+  document.querySelectorAll(".modal-overlay").forEach(function (overlay) {
+    if (!overlay.hidden) closeModal(overlay.getAttribute("data-modal"));
+  });
+});
+
 /* ---------- auth guard ---------- */
 var authGate = document.getElementById("authGate");
 var dash = document.getElementById("dash");
@@ -24,7 +71,11 @@ onAuthStateChanged(auth, async function (user) {
     window.location.href = "admin.html?denied=1";
     return;
   }
-  document.getElementById("whoami").textContent = user.email;
+  var adminData = adminSnap.data() || {};
+  var displayName = adminData.name || user.email.split("@")[0];
+  document.getElementById("userAvatar").textContent = initials(displayName);
+  document.getElementById("userName").textContent = displayName;
+  document.getElementById("userEmail").textContent = user.email;
   authGate.hidden = true;
   dash.hidden = false;
   loadEboard();
@@ -49,6 +100,7 @@ document.querySelectorAll(".dash-nav-item").forEach(function (btn) {
     var tab = btn.getAttribute("data-tab");
     document.querySelectorAll(".dash-nav-item").forEach(function (b) { b.classList.remove("is-active"); });
     document.querySelectorAll(".admin-panel").forEach(function (p) { p.hidden = true; });
+    document.querySelectorAll("[data-add]").forEach(function (b) { b.hidden = b.getAttribute("data-add") !== tab; });
     btn.classList.add("is-active");
     document.querySelector('.admin-panel[data-panel="' + tab + '"]').hidden = false;
     document.getElementById("pageTitle").textContent = TAB_META[tab].title;
@@ -56,50 +108,37 @@ document.querySelectorAll(".dash-nav-item").forEach(function (btn) {
   });
 });
 
-/* ---------- helpers ---------- */
-function setStatus(el, msg, isError) {
-  el.textContent = msg;
-  el.className = "admin-status " + (isError ? "err" : "ok");
-  if (msg) setTimeout(function () { el.textContent = ""; el.className = "admin-status"; }, 4500);
-}
-function initials(name) {
-  return (name || "").split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join("");
-}
-async function uploadPhoto(file, folder, id) {
-  var path = folder + "/" + id + "-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.]/g, "_");
-  var storageRef = ref(storage, path);
-  await uploadBytes(storageRef, file);
-  return getDownloadURL(storageRef);
-}
-
 /* ================= E-BOARD ================= */
 var eboardForm = document.getElementById("eboardForm");
 var eboardList = document.getElementById("eboardList");
 var eboardStatus = document.getElementById("eboardStatus");
-var eboardCancelBtn = document.getElementById("eboardCancelBtn");
 
 function resetEboardForm() {
   eboardForm.reset();
   document.getElementById("eboardId").value = "";
   document.getElementById("eboardFormTitle").textContent = "Add a member";
   document.getElementById("eboardSaveBtn").textContent = "Save member";
-  eboardCancelBtn.hidden = true;
 }
-eboardCancelBtn.addEventListener("click", resetEboardForm);
+document.querySelector('[data-add="eboard"]').addEventListener("click", function () {
+  resetEboardForm();
+  openModal("eboard");
+});
 
 async function loadEboard() {
-  eboardList.innerHTML = '<p class="admin-empty">Loading…</p>';
+  eboardList.innerHTML = '<tr class="table-empty"><td colspan="4">Loading…</td></tr>';
   var snap = await getDocs(query(collection(db, "eboard"), orderBy("order")));
-  if (snap.empty) { eboardList.innerHTML = '<p class="admin-empty">No E-Board members yet — add the first one.</p>'; return; }
+  if (snap.empty) { eboardList.innerHTML = '<tr class="table-empty"><td colspan="4">No E-Board members yet — add the first one.</td></tr>'; return; }
   eboardList.innerHTML = "";
+  var i = 0;
   snap.forEach(function (docSnap) {
+    i++;
     var d = docSnap.data();
-    var row = document.createElement("div");
-    row.className = "admin-row";
+    var row = document.createElement("tr");
     row.innerHTML =
-      '<div class="admin-row-avatar">' + (d.photoUrl ? '<img src="' + d.photoUrl + '" alt="">' : initials(d.name)) + "</div>" +
-      '<div class="admin-row-body"><div class="admin-row-title">' + (d.name || "") + '</div><div class="admin-row-sub">' + (d.position || "") + "</div></div>" +
-      '<div class="admin-row-actions"><button type="button" data-act="edit">Edit</button><button type="button" class="danger" data-act="del">Delete</button></div>';
+      '<td class="col-num">' + i + "</td>" +
+      '<td class="cell-name">' + esc(d.name) + "</td>" +
+      "<td>" + esc(d.position) + "</td>" +
+      '<td><div class="table-actions"><button type="button" data-act="edit">Edit</button><button type="button" class="danger" data-act="del">Delete</button></div></td>';
     row.querySelector('[data-act="edit"]').addEventListener("click", function () {
       document.getElementById("eboardId").value = docSnap.id;
       document.getElementById("eboardName").value = d.name || "";
@@ -112,8 +151,7 @@ async function loadEboard() {
       document.getElementById("eboardLinkedin").value = d.linkedin || "";
       document.getElementById("eboardFormTitle").textContent = "Edit " + (d.name || "member");
       document.getElementById("eboardSaveBtn").textContent = "Save changes";
-      eboardCancelBtn.hidden = false;
-      eboardForm.scrollIntoView({ behavior: "smooth", block: "start" });
+      openModal("eboard");
     });
     row.querySelector('[data-act="del"]').addEventListener("click", async function () {
       if (!confirm('Remove "' + (d.name || "this member") + '" from the E-Board?')) return;
@@ -152,8 +190,8 @@ eboardForm.addEventListener("submit", async function (e) {
     }
     if (file) data.photoUrl = await uploadPhoto(file, "eboard", targetId);
     await setDoc(doc(db, "eboard", targetId), data, { merge: true });
-    setStatus(eboardStatus, "Saved.");
     resetEboardForm();
+    closeModal("eboard");
     loadEboard();
   } catch (err) {
     setStatus(eboardStatus, "Something went wrong: " + err.message, true);
@@ -166,30 +204,35 @@ eboardForm.addEventListener("submit", async function (e) {
 var membersForm = document.getElementById("membersForm");
 var membersList = document.getElementById("membersList");
 var memberStatus = document.getElementById("memberStatus");
-var memberCancelBtn = document.getElementById("memberCancelBtn");
 
 function resetMembersForm() {
   membersForm.reset();
   document.getElementById("memberId").value = "";
   document.getElementById("membersFormTitle").textContent = "Add a member";
   document.getElementById("memberSaveBtn").textContent = "Save member";
-  memberCancelBtn.hidden = true;
 }
-memberCancelBtn.addEventListener("click", resetMembersForm);
+document.querySelector('[data-add="members"]').addEventListener("click", function () {
+  resetMembersForm();
+  openModal("members");
+});
 
 async function loadMembers() {
-  membersList.innerHTML = '<p class="admin-empty">Loading…</p>';
+  membersList.innerHTML = '<tr class="table-empty"><td colspan="6">Loading…</td></tr>';
   var snap = await getDocs(collection(db, "members"));
-  if (snap.empty) { membersList.innerHTML = '<p class="admin-empty">No members added yet.</p>'; return; }
+  if (snap.empty) { membersList.innerHTML = '<tr class="table-empty"><td colspan="6">No members added yet.</td></tr>'; return; }
   membersList.innerHTML = "";
+  var i = 0;
   snap.forEach(function (docSnap) {
+    i++;
     var d = docSnap.data();
-    var row = document.createElement("div");
-    row.className = "admin-row";
+    var row = document.createElement("tr");
     row.innerHTML =
-      '<div class="admin-row-avatar">' + initials(d.name) + "</div>" +
-      '<div class="admin-row-body"><div class="admin-row-title">' + (d.name || "") + '</div><div class="admin-row-sub">' + (d.email || "") + "</div></div>" +
-      '<div class="admin-row-actions"><button type="button" data-act="edit">Edit</button><button type="button" class="danger" data-act="del">Delete</button></div>';
+      '<td class="col-num">' + i + "</td>" +
+      '<td class="cell-name">' + esc(d.name) + "</td>" +
+      '<td class="cell-muted">' + esc(d.email) + "</td>" +
+      "<td>" + esc(d.major) + "</td>" +
+      "<td>" + esc(d.gradYear) + "</td>" +
+      '<td><div class="table-actions"><button type="button" data-act="edit">Edit</button><button type="button" class="danger" data-act="del">Delete</button></div></td>';
     row.querySelector('[data-act="edit"]').addEventListener("click", function () {
       document.getElementById("memberId").value = docSnap.id;
       document.getElementById("memberName").value = d.name || "";
@@ -198,8 +241,7 @@ async function loadMembers() {
       document.getElementById("memberGrad").value = d.gradYear || "";
       document.getElementById("membersFormTitle").textContent = "Edit " + (d.name || "member");
       document.getElementById("memberSaveBtn").textContent = "Save changes";
-      memberCancelBtn.hidden = false;
-      membersForm.scrollIntoView({ behavior: "smooth", block: "start" });
+      openModal("members");
     });
     row.querySelector('[data-act="del"]').addEventListener("click", async function () {
       if (!confirm('Remove "' + (d.name || "this member") + '"?')) return;
@@ -224,8 +266,8 @@ membersForm.addEventListener("submit", async function (e) {
     };
     if (id) await setDoc(doc(db, "members", id), data, { merge: true });
     else await addDoc(collection(db, "members"), data);
-    setStatus(memberStatus, "Saved.");
     resetMembersForm();
+    closeModal("members");
     loadMembers();
   } catch (err) {
     setStatus(memberStatus, "Something went wrong: " + err.message, true);
@@ -238,30 +280,37 @@ membersForm.addEventListener("submit", async function (e) {
 var eventsForm = document.getElementById("eventsForm");
 var eventsList = document.getElementById("eventsList");
 var eventStatus = document.getElementById("eventStatus");
-var eventCancelBtn = document.getElementById("eventCancelBtn");
 
 function resetEventsForm() {
   eventsForm.reset();
   document.getElementById("eventId").value = "";
   document.getElementById("eventsFormTitle").textContent = "Add an event";
   document.getElementById("eventSaveBtn").textContent = "Save event";
-  eventCancelBtn.hidden = true;
 }
-eventCancelBtn.addEventListener("click", resetEventsForm);
+document.querySelector('[data-add="events"]').addEventListener("click", function () {
+  resetEventsForm();
+  openModal("events");
+});
+
+var TYPE_LABEL = { talk: "Talk", workshop: "Workshop", social: "Social" };
 
 async function loadEvents() {
-  eventsList.innerHTML = '<p class="admin-empty">Loading…</p>';
+  eventsList.innerHTML = '<tr class="table-empty"><td colspan="6">Loading…</td></tr>';
   var snap = await getDocs(query(collection(db, "events"), orderBy("date")));
-  if (snap.empty) { eventsList.innerHTML = '<p class="admin-empty">No events added yet.</p>'; return; }
+  if (snap.empty) { eventsList.innerHTML = '<tr class="table-empty"><td colspan="6">No events added yet.</td></tr>'; return; }
   eventsList.innerHTML = "";
+  var i = 0;
   snap.forEach(function (docSnap) {
+    i++;
     var d = docSnap.data();
-    var row = document.createElement("div");
-    row.className = "admin-row";
+    var row = document.createElement("tr");
     row.innerHTML =
-      '<div class="admin-row-avatar">' + (d.photoUrl ? '<img src="' + d.photoUrl + '" alt="">' : "📅") + "</div>" +
-      '<div class="admin-row-body"><div class="admin-row-title">' + (d.title || "") + '</div><div class="admin-row-sub">' + (d.date || "") + (d.location ? " · " + d.location : "") + "</div></div>" +
-      '<div class="admin-row-actions"><button type="button" data-act="edit">Edit</button><button type="button" class="danger" data-act="del">Delete</button></div>';
+      '<td class="col-num">' + i + "</td>" +
+      '<td class="cell-name">' + esc(d.title) + "</td>" +
+      '<td class="cell-muted">' + esc(d.date) + "</td>" +
+      "<td>" + esc(TYPE_LABEL[d.type] || d.type) + "</td>" +
+      '<td class="cell-muted">' + esc(d.location) + "</td>" +
+      '<td><div class="table-actions"><button type="button" data-act="edit">Edit</button><button type="button" class="danger" data-act="del">Delete</button></div></td>';
     row.querySelector('[data-act="edit"]').addEventListener("click", function () {
       document.getElementById("eventId").value = docSnap.id;
       document.getElementById("eventTitle").value = d.title || "";
@@ -273,8 +322,7 @@ async function loadEvents() {
       document.getElementById("eventRsvp").value = d.rsvpLink || "";
       document.getElementById("eventsFormTitle").textContent = "Edit " + (d.title || "event");
       document.getElementById("eventSaveBtn").textContent = "Save changes";
-      eventCancelBtn.hidden = false;
-      eventsForm.scrollIntoView({ behavior: "smooth", block: "start" });
+      openModal("events");
     });
     row.querySelector('[data-act="del"]').addEventListener("click", async function () {
       if (!confirm('Remove "' + (d.title || "this event") + '"?')) return;
@@ -308,8 +356,8 @@ eventsForm.addEventListener("submit", async function (e) {
     }
     if (file) data.photoUrl = await uploadPhoto(file, "events", targetId);
     await setDoc(doc(db, "events", targetId), data, { merge: true });
-    setStatus(eventStatus, "Saved.");
     resetEventsForm();
+    closeModal("events");
     loadEvents();
   } catch (err) {
     setStatus(eventStatus, "Something went wrong: " + err.message, true);
@@ -323,20 +371,27 @@ var adminsForm = document.getElementById("adminsForm");
 var adminsList = document.getElementById("adminsList");
 var adminStatus = document.getElementById("adminStatus");
 
+document.querySelector('[data-add="admins"]').addEventListener("click", function () {
+  adminsForm.reset();
+  openModal("admins");
+});
+
 async function loadAdmins() {
-  adminsList.innerHTML = '<p class="admin-empty">Loading…</p>';
+  adminsList.innerHTML = '<tr class="table-empty"><td colspan="4">Loading…</td></tr>';
   var snap = await getDocs(collection(db, "admins"));
-  if (snap.empty) { adminsList.innerHTML = '<p class="admin-empty">No admins yet.</p>'; return; }
+  if (snap.empty) { adminsList.innerHTML = '<tr class="table-empty"><td colspan="4">No admins yet.</td></tr>'; return; }
   adminsList.innerHTML = "";
+  var i = 0;
   snap.forEach(function (docSnap) {
+    i++;
     var d = docSnap.data();
     var isSelf = auth.currentUser && docSnap.id === auth.currentUser.uid;
-    var row = document.createElement("div");
-    row.className = "admin-row";
+    var row = document.createElement("tr");
     row.innerHTML =
-      '<div class="admin-row-avatar">' + initials(d.name || d.email) + "</div>" +
-      '<div class="admin-row-body"><div class="admin-row-title">' + (d.name || "") + (isSelf ? " (you)" : "") + '</div><div class="admin-row-sub">' + (d.email || "") + "</div></div>" +
-      '<div class="admin-row-actions">' + (isSelf ? "" : '<button type="button" class="danger" data-act="revoke">Revoke access</button>') + "</div>";
+      '<td class="col-num">' + i + "</td>" +
+      '<td class="cell-name">' + esc(d.name) + (isSelf ? " (you)" : "") + "</td>" +
+      '<td class="cell-muted">' + esc(d.email) + "</td>" +
+      '<td><div class="table-actions">' + (isSelf ? "" : '<button type="button" class="danger" data-act="revoke">Revoke access</button>') + "</div></td>";
     if (!isSelf) {
       row.querySelector('[data-act="revoke"]').addEventListener("click", async function () {
         if (!confirm('Revoke CMS access for "' + (d.name || d.email) + '"? They will no longer be able to sign in and manage content.')) return;
@@ -373,8 +428,8 @@ adminsForm.addEventListener("submit", async function (e) {
       addedAt: serverTimestamp()
     });
 
-    setStatus(adminStatus, "Invited — " + email + " will get an email to set their password.");
     adminsForm.reset();
+    closeModal("admins");
     loadAdmins();
   } catch (err) {
     var msg = err && err.code === "auth/email-already-in-use"
