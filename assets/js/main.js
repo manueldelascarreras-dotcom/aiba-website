@@ -77,11 +77,19 @@
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEboardModal(card); }
       });
     });
-    eboardModal.querySelectorAll("[data-close]").forEach(function (el) {
-      el.addEventListener("click", closeEboardModal);
+    /* delegated close: works even if individual listeners fail to bind */
+    eboardModal.addEventListener("click", function (e) {
+      if (e.target.closest("[data-close]")) closeEboardModal();
     });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && !eboardModal.hidden) closeEboardModal();
+    });
+    /* always start closed — guards against a stale/back-forward-cached page
+       restoring the DOM with the modal mid-open */
+    eboardModal.hidden = true;
+    document.body.classList.remove("eboard-modal-open");
+    window.addEventListener("pageshow", function (e) {
+      if (e.persisted) closeEboardModal();
     });
   }
 
