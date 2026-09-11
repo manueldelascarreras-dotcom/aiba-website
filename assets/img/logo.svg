@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-label="AI Business Association logo">
+
+  <defs>
+    <linearGradient id="aiba-burst" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#EE7B2E"/>
+      <stop offset="0.45" stop-color="#B98A34"/>
+      <stop offset="1" stop-color="#2E6B41"/>
+    </linearGradient>
+    <path id="aiba-arc-top" d="M 30 110 A 80 80 0 0 1 190 110" fill="none"/>
+    <path id="aiba-arc-bot" d="M 34 110 A 76 76 0 0 0 186 110" fill="none"/>
+  </defs>
+  <circle cx="110" cy="110" r="106" fill="#FFFFFF" stroke="#E4E4E4" stroke-width="2"/>
+  <text font-family="Sora, Arial, sans-serif" font-size="21" font-weight="700" letter-spacing="2.5" fill="#D9762F">
+    <textPath href="#aiba-arc-top" startOffset="50%" text-anchor="middle">AI BUSINESS</textPath>
+  </text>
+  <text font-family="Sora, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="4" fill="#2F4A3A">
+    <textPath href="#aiba-arc-bot" startOffset="50%" text-anchor="middle">ASSOCIATION</textPath>
+  </text>
+
+  <g stroke="url(#aiba-burst)" stroke-width="3.4" fill="url(#aiba-burst)" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="94" y="94" width="32" height="32" rx="4" fill="none" stroke-width="4"/>
+    <rect x="103" y="103" width="14" height="14" rx="2" fill="none" stroke-width="3"/>
+    <path d="M 110.0 92.0 L 110.0 58.0" fill="none"/>
+    <circle cx="110.0" cy="58.0" r="4.6"/>
+    <path d="M 119.0 94.4 L 130.0 75.4 L 138.7 80.4" fill="none"/>
+    <circle cx="138.7" cy="80.4" r="4.6"/>
+    <path d="M 125.6 101.0 L 155.0 84.0" fill="none"/>
+    <circle cx="155.0" cy="84.0" r="4.6"/>
+    <path d="M 128.0 110.0 L 150.0 110.0" fill="none"/>
+    <circle cx="150.0" cy="110.0" r="4.6"/>
+    <path d="M 125.6 119.0 L 155.0 136.0 L 150.0 144.7" fill="none"/>
+    <circle cx="150.0" cy="144.7" r="4.6"/>
+    <path d="M 119.0 125.6 L 130.0 144.6" fill="none"/>
+    <circle cx="130.0" cy="144.6" r="4.6"/>
+    <path d="M 110.0 128.0 L 110.0 162.0" fill="none"/>
+    <circle cx="110.0" cy="162.0" r="4.6"/>
+    <path d="M 101.0 125.6 L 90.0 144.6 L 81.3 139.6" fill="none"/>
+    <circle cx="81.3" cy="139.6" r="4.6"/>
+    <path d="M 94.4 119.0 L 65.0 136.0" fill="none"/>
+    <circle cx="65.0" cy="136.0" r="4.6"/>
+    <path d="M 92.0 110.0 L 70.0 110.0" fill="none"/>
+    <circle cx="70.0" cy="110.0" r="4.6"/>
+    <path d="M 94.4 101.0 L 65.0 84.0 L 70.0 75.3" fill="none"/>
+    <circle cx="70.0" cy="75.3" r="4.6"/>
+    <path d="M 101.0 94.4 L 90.0 75.4" fill="none"/>
+    <circle cx="90.0" cy="75.4" r="4.6"/>
+  </g>
+</svg>
