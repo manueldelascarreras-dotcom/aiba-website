@@ -1,56 +1,58 @@
-import { auth, db, storage } from "./firebase-init.js";
+import { auth, db, storage, firebaseConfig } from "./firebase-init.js?v=2";
 import {
-  signInWithEmailAndPassword, signOut, onAuthStateChanged
+  onAuthStateChanged, signOut, signInWithEmailAndPassword,
+  createUserWithEmailAndPassword, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import {
-  collection, doc, addDoc, setDoc, deleteDoc, getDocs, query, orderBy
+  collection, doc, addDoc, setDoc, deleteDoc, getDoc, getDocs, query, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import {
   ref, uploadBytes, getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getAuth as getSecondaryAuth } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
-/* ---------- auth ---------- */
-var loginView = document.getElementById("loginView");
-var cmsView = document.getElementById("cmsView");
-var loginForm = document.getElementById("loginForm");
-var loginError = document.getElementById("loginError");
+/* ---------- auth guard ---------- */
+var authGate = document.getElementById("authGate");
+var dash = document.getElementById("dash");
 
-loginForm.addEventListener("submit", function (e) {
-  e.preventDefault();
-  loginError.hidden = true;
-  var email = document.getElementById("loginEmail").value.trim();
-  var password = document.getElementById("loginPassword").value;
-  signInWithEmailAndPassword(auth, email, password).catch(function (err) {
-    loginError.textContent = "Couldn't sign in — check your email and password.";
-    loginError.hidden = false;
-  });
+onAuthStateChanged(auth, async function (user) {
+  if (!user) { window.location.href = "admin.html"; return; }
+  var adminSnap = await getDoc(doc(db, "admins", user.uid));
+  if (!adminSnap.exists()) {
+    await signOut(auth);
+    window.location.href = "admin.html?denied=1";
+    return;
+  }
+  document.getElementById("whoami").textContent = user.email;
+  authGate.hidden = true;
+  dash.hidden = false;
+  loadEboard();
+  loadMembers();
+  loadEvents();
+  loadAdmins();
 });
 
 document.getElementById("logoutBtn").addEventListener("click", function () {
-  signOut(auth);
-});
-
-onAuthStateChanged(auth, function (user) {
-  if (user) {
-    loginView.hidden = true;
-    cmsView.hidden = false;
-    document.getElementById("whoami").textContent = user.email;
-    loadEboard();
-    loadMembers();
-    loadEvents();
-  } else {
-    cmsView.hidden = true;
-    loginView.hidden = false;
-  }
+  signOut(auth).then(function () { window.location.href = "admin.html"; });
 });
 
 /* ---------- tabs ---------- */
-document.querySelectorAll(".admin-tab").forEach(function (tab) {
-  tab.addEventListener("click", function () {
-    document.querySelectorAll(".admin-tab").forEach(function (t) { t.classList.remove("is-active"); });
+var TAB_META = {
+  eboard: { title: "E-Board", sub: "Shown on the Community page and homepage, in this order." },
+  members: { title: "Members", sub: "Private directory — not shown publicly on the site." },
+  events: { title: "Events", sub: "Shown on the Events page, below the featured event." },
+  admins: { title: "Admins", sub: "Anyone listed here can sign in and manage E-Board, Members, and Events." }
+};
+document.querySelectorAll(".dash-nav-item").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var tab = btn.getAttribute("data-tab");
+    document.querySelectorAll(".dash-nav-item").forEach(function (b) { b.classList.remove("is-active"); });
     document.querySelectorAll(".admin-panel").forEach(function (p) { p.hidden = true; });
-    tab.classList.add("is-active");
-    document.querySelector('.admin-panel[data-panel="' + tab.getAttribute("data-tab") + '"]').hidden = false;
+    btn.classList.add("is-active");
+    document.querySelector('.admin-panel[data-panel="' + tab + '"]').hidden = false;
+    document.getElementById("pageTitle").textContent = TAB_META[tab].title;
+    document.getElementById("pageSub").textContent = TAB_META[tab].sub;
   });
 });
 
@@ -58,13 +60,11 @@ document.querySelectorAll(".admin-tab").forEach(function (tab) {
 function setStatus(el, msg, isError) {
   el.textContent = msg;
   el.className = "admin-status " + (isError ? "err" : "ok");
-  if (msg) setTimeout(function () { el.textContent = ""; el.className = "admin-status"; }, 4000);
+  if (msg) setTimeout(function () { el.textContent = ""; el.className = "admin-status"; }, 4500);
 }
-
 function initials(name) {
   return (name || "").split(/\s+/).filter(Boolean).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join("");
 }
-
 async function uploadPhoto(file, folder, id) {
   var path = folder + "/" + id + "-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9.]/g, "_");
   var storageRef = ref(storage, path);
@@ -90,7 +90,7 @@ eboardCancelBtn.addEventListener("click", resetEboardForm);
 async function loadEboard() {
   eboardList.innerHTML = '<p class="admin-empty">Loading…</p>';
   var snap = await getDocs(query(collection(db, "eboard"), orderBy("order")));
-  if (snap.empty) { eboardList.innerHTML = '<p class="admin-empty">No E-Board members yet.</p>'; return; }
+  if (snap.empty) { eboardList.innerHTML = '<p class="admin-empty">No E-Board members yet — add the first one.</p>'; return; }
   eboardList.innerHTML = "";
   snap.forEach(function (docSnap) {
     var d = docSnap.data();
@@ -150,9 +150,7 @@ eboardForm.addEventListener("submit", async function (e) {
       var newDoc = await addDoc(collection(db, "eboard"), data);
       targetId = newDoc.id;
     }
-    if (file) {
-      data.photoUrl = await uploadPhoto(file, "eboard", targetId);
-    }
+    if (file) data.photoUrl = await uploadPhoto(file, "eboard", targetId);
     await setDoc(doc(db, "eboard", targetId), data, { merge: true });
     setStatus(eboardStatus, "Saved.");
     resetEboardForm();
@@ -224,11 +222,8 @@ membersForm.addEventListener("submit", async function (e) {
       major: document.getElementById("memberMajor").value.trim(),
       gradYear: document.getElementById("memberGrad").value.trim()
     };
-    if (id) {
-      await setDoc(doc(db, "members", id), data, { merge: true });
-    } else {
-      await addDoc(collection(db, "members"), data);
-    }
+    if (id) await setDoc(doc(db, "members", id), data, { merge: true });
+    else await addDoc(collection(db, "members"), data);
     setStatus(memberStatus, "Saved.");
     resetMembersForm();
     loadMembers();
@@ -311,9 +306,7 @@ eventsForm.addEventListener("submit", async function (e) {
       var newDoc = await addDoc(collection(db, "events"), data);
       targetId = newDoc.id;
     }
-    if (file) {
-      data.photoUrl = await uploadPhoto(file, "events", targetId);
-    }
+    if (file) data.photoUrl = await uploadPhoto(file, "events", targetId);
     await setDoc(doc(db, "events", targetId), data, { merge: true });
     setStatus(eventStatus, "Saved.");
     resetEventsForm();
@@ -321,6 +314,75 @@ eventsForm.addEventListener("submit", async function (e) {
   } catch (err) {
     setStatus(eventStatus, "Something went wrong: " + err.message, true);
   } finally {
+    saveBtn.disabled = false;
+  }
+});
+
+/* ================= ADMINS ================= */
+var adminsForm = document.getElementById("adminsForm");
+var adminsList = document.getElementById("adminsList");
+var adminStatus = document.getElementById("adminStatus");
+
+async function loadAdmins() {
+  adminsList.innerHTML = '<p class="admin-empty">Loading…</p>';
+  var snap = await getDocs(collection(db, "admins"));
+  if (snap.empty) { adminsList.innerHTML = '<p class="admin-empty">No admins yet.</p>'; return; }
+  adminsList.innerHTML = "";
+  snap.forEach(function (docSnap) {
+    var d = docSnap.data();
+    var isSelf = auth.currentUser && docSnap.id === auth.currentUser.uid;
+    var row = document.createElement("div");
+    row.className = "admin-row";
+    row.innerHTML =
+      '<div class="admin-row-avatar">' + initials(d.name || d.email) + "</div>" +
+      '<div class="admin-row-body"><div class="admin-row-title">' + (d.name || "") + (isSelf ? " (you)" : "") + '</div><div class="admin-row-sub">' + (d.email || "") + "</div></div>" +
+      '<div class="admin-row-actions">' + (isSelf ? "" : '<button type="button" class="danger" data-act="revoke">Revoke access</button>') + "</div>";
+    if (!isSelf) {
+      row.querySelector('[data-act="revoke"]').addEventListener("click", async function () {
+        if (!confirm('Revoke CMS access for "' + (d.name || d.email) + '"? They will no longer be able to sign in and manage content.')) return;
+        await deleteDoc(doc(db, "admins", docSnap.id));
+        loadAdmins();
+      });
+    }
+    adminsList.appendChild(row);
+  });
+}
+
+adminsForm.addEventListener("submit", async function (e) {
+  e.preventDefault();
+  var saveBtn = document.getElementById("adminSaveBtn");
+  saveBtn.disabled = true;
+  var name = document.getElementById("adminName").value.trim();
+  var email = document.getElementById("adminEmail").value.trim();
+  var secondaryApp = null;
+  try {
+    // Create the new account on a throwaway secondary Firebase App instance so
+    // it never disturbs the currently signed-in admin's own session.
+    secondaryApp = initializeApp(firebaseConfig, "invite-" + Date.now());
+    var secondaryAuth = getSecondaryAuth(secondaryApp);
+    var tempPassword = crypto.randomUUID(); // random, never shown, never used to sign in
+    var cred = await createUserWithEmailAndPassword(secondaryAuth, email, tempPassword);
+    var newUid = cred.user.uid;
+    await sendPasswordResetEmail(secondaryAuth, email);
+    await signOut(secondaryAuth);
+
+    await setDoc(doc(db, "admins", newUid), {
+      name: name,
+      email: email,
+      addedBy: auth.currentUser ? auth.currentUser.email : "",
+      addedAt: serverTimestamp()
+    });
+
+    setStatus(adminStatus, "Invited — " + email + " will get an email to set their password.");
+    adminsForm.reset();
+    loadAdmins();
+  } catch (err) {
+    var msg = err && err.code === "auth/email-already-in-use"
+      ? "That email already has an account. Ask them to sign in at /admin — if it still says no access, add them from the Firebase console."
+      : "Something went wrong: " + (err.message || err);
+    setStatus(adminStatus, msg, true);
+  } finally {
+    if (secondaryApp) { try { await deleteApp(secondaryApp); } catch (e) {} }
     saveBtn.disabled = false;
   }
 });

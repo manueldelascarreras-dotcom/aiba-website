@@ -1,6 +1,6 @@
 // Renders CMS-managed events from Firestore into the events list on events.html.
 // New events appear as rows alongside the hand-built featured event above them.
-import { db } from "./firebase-init.js";
+import { db } from "./firebase-init.js?v=2";
 import {
   collection, getDocs, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";

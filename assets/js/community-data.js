@@ -1,6 +1,6 @@
 // Renders the live E-Board from Firestore on community.html.
 // If Firestore is empty/unreachable, the static HTML already in the page stays as-is.
-import { db } from "./firebase-init.js";
+import { db } from "./firebase-init.js?v=2";
 import {
   collection, getDocs, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";

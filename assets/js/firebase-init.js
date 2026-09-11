@@ -6,7 +6,7 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.2/firebas
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   projectId: "aiba-um",
   appId: "1:866111108584:web:4b5ab6da14a506224ae05d",
   storageBucket: "aiba-um.firebasestorage.app",
