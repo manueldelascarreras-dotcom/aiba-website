@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=5">
+<link rel="stylesheet" href="assets/css/styles.css?v=6">
 </head>
 <body>
 
@@ -57,42 +57,42 @@
       </div>
       <div class="eboard-grid">
 
-        <article class="eboard-card">
+        <article class="eboard-card" data-email="hockeycam21@gmail.com">
           <div class="eboard-photo"><span class="eboard-initials">CS</span><img src="assets/img/eboard/cameron.jpg" alt="Cameron Sherman" onerror="this.remove()"></div>
           <h3>Cameron Sherman</h3>
           <div class="eboard-pos">President</div>
           <div class="eboard-sub">Junior &middot; Business Technology</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" data-email="ncm129@miami.edu">
           <div class="eboard-photo"><span class="eboard-initials">NM</span><img src="assets/img/eboard/nicholas.jpg" alt="Nicholas Moffett" onerror="this.remove()"></div>
           <h3>Nicholas Moffett</h3>
           <div class="eboard-pos">Vice President</div>
           <div class="eboard-sub">Senior &middot; Business Technology</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" data-email="bxd709@miami.edu">
           <div class="eboard-photo"><span class="eboard-initials">BD</span><img src="assets/img/eboard/brady.jpg" alt="Brady Devine" onerror="this.remove()"></div>
           <h3>Brady Devine</h3>
           <div class="eboard-pos">Treasurer</div>
           <div class="eboard-sub">Junior &middot; Finance</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" data-email="jxb5486@miami.edu">
           <div class="eboard-photo"><span class="eboard-initials">JB</span><img src="assets/img/eboard/jessie.jpg" alt="Jessie Bavly" onerror="this.remove()"></div>
           <h3>Jessie Bavly</h3>
           <div class="eboard-pos">Operations</div>
           <div class="eboard-sub">Senior &middot; Legal Studies</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" data-email="mxd4463@miami.edu">
           <div class="eboard-photo"><span class="eboard-initials">MC</span><img src="assets/img/eboard/manuel.jpg" alt="Manuel de las Carreras" onerror="this.remove()"></div>
           <h3>Manuel de las Carreras</h3>
           <div class="eboard-pos">Partnerships</div>
           <div class="eboard-sub">Senior &middot; Finance</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" data-email="matteo.farinacci@gmail.com">
           <div class="eboard-photo"><span class="eboard-initials">MF</span><img src="assets/img/eboard/matteo.jpg" alt="Matteo Farinacci" onerror="this.remove()"></div>
           <h3>Matteo Farinacci</h3>
           <div class="eboard-pos">PR &amp; Marketing</div>
@@ -177,7 +177,18 @@
   </div>
 </footer>
 
+<div class="eboard-modal-overlay" id="eboardModalOverlay" hidden>
+  <div class="eboard-modal-card" role="dialog" aria-modal="true" aria-labelledby="eboardModalName">
+    <button class="eboard-modal-close" id="eboardModalClose" type="button" aria-label="Close">&times;</button>
+    <div class="eboard-modal-photo" id="eboardModalPhoto"></div>
+    <h3 id="eboardModalName"></h3>
+    <div class="eboard-modal-pos" id="eboardModalPos"></div>
+    <div class="eboard-modal-sub" id="eboardModalSub"></div>
+    <div class="eboard-modal-info" id="eboardModalInfo"></div>
+  </div>
+</div>
+
 <script src="assets/js/main.js?v=6"></script>
-<script type="module" src="assets/js/community-data.js?v=2"></script>
+<script type="module" src="assets/js/community-data.js?v=3"></script>
 </body>
 </html>
