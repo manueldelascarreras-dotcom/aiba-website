@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/styles.css?v=3">
+<link rel="stylesheet" href="assets/css/styles.css?v=4">
 </head>
 <body>
 
@@ -57,42 +57,48 @@
       </div>
       <div class="eboard-grid">
 
-        <article class="eboard-card">
+        <article class="eboard-card" role="button" tabindex="0"
+          data-minor="AI &amp; Real Estate" data-email="" data-hometown="" data-linkedin="">
           <div class="eboard-photo"><span class="eboard-initials">CS</span><img src="assets/img/eboard/cameron.jpg" alt="Cameron Sherman" onerror="this.remove()"></div>
           <h3>Cameron Sherman</h3>
           <div class="eboard-pos">President</div>
           <div class="eboard-sub">Junior &middot; Business Technology</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" role="button" tabindex="0"
+          data-minor="Mathematics &amp; Computer Science" data-email="" data-hometown="" data-linkedin="">
           <div class="eboard-photo"><span class="eboard-initials">NM</span><img src="assets/img/eboard/nicholas.jpg" alt="Nicholas Moffett" onerror="this.remove()"></div>
           <h3>Nicholas Moffett</h3>
           <div class="eboard-pos">Vice President</div>
           <div class="eboard-sub">Senior &middot; Business Technology</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" role="button" tabindex="0"
+          data-minor="AI" data-email="" data-hometown="" data-linkedin="">
           <div class="eboard-photo"><span class="eboard-initials">BD</span><img src="assets/img/eboard/brady.jpg" alt="Brady Devine" onerror="this.remove()"></div>
           <h3>Brady Devine</h3>
           <div class="eboard-pos">Treasurer</div>
           <div class="eboard-sub">Junior &middot; Finance</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" role="button" tabindex="0"
+          data-minor="Marketing" data-email="" data-hometown="" data-linkedin="">
           <div class="eboard-photo"><span class="eboard-initials">JB</span><img src="assets/img/eboard/jessie.jpg" alt="Jessie Bavly" onerror="this.remove()"></div>
           <h3>Jessie Bavly</h3>
           <div class="eboard-pos">Operations</div>
           <div class="eboard-sub">Senior &middot; Legal Studies</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" role="button" tabindex="0"
+          data-minor="Entrepreneurship" data-email="" data-hometown="" data-linkedin="">
           <div class="eboard-photo"><span class="eboard-initials">MC</span><img src="assets/img/eboard/manuel.jpg" alt="Manuel de las Carreras" onerror="this.remove()"></div>
           <h3>Manuel de las Carreras</h3>
           <div class="eboard-pos">Partnerships</div>
           <div class="eboard-sub">Senior &middot; Finance</div>
         </article>
 
-        <article class="eboard-card">
+        <article class="eboard-card" role="button" tabindex="0"
+          data-minor="Entrepreneurship" data-email="" data-hometown="" data-linkedin="">
           <div class="eboard-photo"><span class="eboard-initials">MF</span><img src="assets/img/eboard/matteo.jpg" alt="Matteo Farinacci" onerror="this.remove()"></div>
           <h3>Matteo Farinacci</h3>
           <div class="eboard-pos">PR &amp; Marketing</div>
@@ -177,6 +183,36 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=2"></script>
+<!-- E-BOARD MEMBER MODAL -->
+<div class="eboard-modal" id="eboardModal" hidden>
+  <div class="eboard-modal-backdrop" data-close></div>
+  <div class="eboard-modal-card" role="dialog" aria-modal="true" aria-labelledby="eboardModalName">
+    <button class="eboard-modal-close" type="button" data-close aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="eboard-modal-photo"><img id="eboardModalImg" src="" alt=""></div>
+    <div class="eboard-modal-body">
+      <span class="tag" id="eboardModalPos"></span>
+      <h3 id="eboardModalName"></h3>
+      <p class="eboard-modal-desc" id="eboardModalDesc"></p>
+      <ul class="eboard-modal-info">
+        <li class="eboard-modal-email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <a id="eboardModalEmail" href="#"></a>
+        </li>
+        <li class="eboard-modal-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          <span id="eboardModalHome"></span>
+        </li>
+        <li class="eboard-modal-linkedin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4.5a2 2 0 0 1 4 0V17M11 12.5V17"/></svg>
+          <a id="eboardModalLinkedin" href="#" target="_blank" rel="noopener">LinkedIn</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/main.js?v=4"></script>
 </body>
 </html>

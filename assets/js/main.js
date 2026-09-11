@@ -15,6 +15,76 @@
     });
   }
 
+  /* E-Board member modal (Community page) */
+  var eboardModal = document.getElementById("eboardModal");
+  if (eboardModal) {
+    var emImg = document.getElementById("eboardModalImg");
+    var emPos = document.getElementById("eboardModalPos");
+    var emName = document.getElementById("eboardModalName");
+    var emDesc = document.getElementById("eboardModalDesc");
+    var emEmailLi = eboardModal.querySelector(".eboard-modal-email");
+    var emEmailA = document.getElementById("eboardModalEmail");
+    var emHomeLi = eboardModal.querySelector(".eboard-modal-home");
+    var emHomeSpan = document.getElementById("eboardModalHome");
+    var emLinkedinLi = eboardModal.querySelector(".eboard-modal-linkedin");
+    var emLinkedinA = document.getElementById("eboardModalLinkedin");
+    var emInfoList = eboardModal.querySelector(".eboard-modal-info");
+    var lastFocused = null;
+
+    function openEboardModal(card) {
+      var name = card.querySelector("h3").textContent.trim();
+      var pos = card.querySelector(".eboard-pos").textContent.trim();
+      var sub = card.querySelector(".eboard-sub").textContent.trim();
+      var minor = card.getAttribute("data-minor") || "";
+      var email = card.getAttribute("data-email") || "";
+      var home = card.getAttribute("data-hometown") || "";
+      var linkedin = card.getAttribute("data-linkedin") || "";
+      var img = card.querySelector(".eboard-photo img");
+
+      emName.textContent = name;
+      emPos.textContent = pos;
+      emDesc.textContent = sub + (minor ? " · Minor: " + minor : "");
+      if (img) { emImg.src = img.src; emImg.alt = name; emImg.style.display = ""; }
+      else { emImg.style.display = "none"; }
+
+      if (email) { emEmailA.textContent = email; emEmailA.href = "mailto:" + email; emEmailLi.style.display = ""; }
+      else { emEmailLi.style.display = "none"; }
+
+      if (home) { emHomeSpan.textContent = home; emHomeLi.style.display = ""; }
+      else { emHomeLi.style.display = "none"; }
+
+      if (linkedin) { emLinkedinA.href = linkedin; emLinkedinLi.style.display = ""; }
+      else { emLinkedinLi.style.display = "none"; }
+
+      if (!email && !home && !linkedin) { emInfoList.style.display = "none"; }
+      else { emInfoList.style.display = ""; }
+
+      lastFocused = document.activeElement;
+      eboardModal.hidden = false;
+      document.body.classList.add("eboard-modal-open");
+      eboardModal.querySelector(".eboard-modal-close").focus();
+    }
+
+    function closeEboardModal() {
+      eboardModal.hidden = true;
+      document.body.classList.remove("eboard-modal-open");
+      if (lastFocused) lastFocused.focus();
+    }
+
+    document.querySelectorAll(".eboard-card").forEach(function (card) {
+      card.addEventListener("click", function () { openEboardModal(card); });
+      card.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEboardModal(card); }
+      });
+    });
+    eboardModal.querySelectorAll("[data-close]").forEach(function (el) {
+      el.addEventListener("click", closeEboardModal);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !eboardModal.hidden) closeEboardModal();
+    });
+  }
+
   /* "What you'll learn" accordion — single open at a time */
   document.querySelectorAll(".track-list .track-head").forEach(function (btn) {
     btn.addEventListener("click", function () {
