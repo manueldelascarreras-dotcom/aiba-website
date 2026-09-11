@@ -434,11 +434,8 @@ h3 { font-size: 1.18rem; letter-spacing: 0; }
 .eboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
 .eboard-card {
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm);
-  padding: 10px; box-shadow: var(--shadow-sm); text-align: center; cursor: pointer;
-  transition: transform .15s ease, box-shadow .2s ease, border-color .18s ease;
+  padding: 10px; box-shadow: var(--shadow-sm); text-align: center;
 }
-.eboard-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: #DAD1C0; }
-.eboard-card:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 .eboard-photo {
   position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden;
   background: var(--sand); margin-bottom: 9px; display: grid; place-items: center;
@@ -456,31 +453,6 @@ h3 { font-size: 1.18rem; letter-spacing: 0; }
 .eboard-mini .eboard-initials { font-size: 1rem; }
 .eboard-mini .n { display: block; font-family: var(--font-head); font-weight: 600; font-size: .78rem; color: var(--green); line-height: 1.2; }
 .eboard-mini .r { display: block; font-size: .66rem; color: var(--muted); }
-
-/* E-Board member modal */
-.eboard-modal { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
-.eboard-modal-backdrop { position: absolute; inset: 0; background: rgba(13, 59, 46, .55); backdrop-filter: blur(2px); }
-.eboard-modal-card {
-  position: relative; z-index: 1; background: var(--surface); border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg); max-width: 420px; width: 100%; max-height: 88vh; overflow-y: auto;
-}
-.eboard-modal-close {
-  position: absolute; top: 12px; right: 12px; z-index: 2; width: 34px; height: 34px; border-radius: 999px;
-  background: #fff; border: 1px solid var(--line); display: grid; place-items: center; cursor: pointer; color: var(--charcoal);
-}
-.eboard-modal-close:hover { color: var(--orange); border-color: var(--orange); }
-.eboard-modal-close svg { width: 16px; }
-.eboard-modal-photo { aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--sand); }
-.eboard-modal-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; }
-.eboard-modal-body { padding: 20px 22px 24px; }
-.eboard-modal-body h3 { font-size: 1.3rem; margin: 8px 0 6px; }
-.eboard-modal-desc { color: var(--muted); font-size: .92rem; margin-bottom: 16px; }
-.eboard-modal-info { display: grid; gap: 11px; border-top: 1px solid var(--line); padding-top: 15px; }
-.eboard-modal-info li { display: flex; align-items: center; gap: 10px; font-size: .9rem; color: var(--charcoal); }
-.eboard-modal-info svg { width: 17px; flex: none; color: var(--sage); }
-.eboard-modal-info a { color: var(--green); font-weight: 600; }
-.eboard-modal-info a:hover { color: var(--orange); }
-body.eboard-modal-open { overflow: hidden; }
 
 /* ---------- opportunities ---------- */
 .job-list { display: grid; gap: 14px; }
